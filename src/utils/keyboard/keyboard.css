@@ -1,0 +1,298 @@
+/* Variables del componente */
+:host {
+    /* Dimensiones base */
+    --keyboard-width: min(95%, 1200px);
+    --keyboard-height: min(400px, 60vh);
+    --keyboard-padding: clamp(8px, 2vw, 20px);
+    --keyboard-gap: clamp(4px, 1vw, 10px);
+    --key-base-size: clamp(28px, 3.5vw, 65px);
+    --row-height: clamp(34px, 4.5vw, 75px);
+
+    /* Colores del tema base */
+    --theme-key-bg: #fcfcfc;
+    --theme-key-text: #000000;
+    --theme-key-border: #cacaca;
+    --theme-key-hover: #ffffff;
+    --theme-key-active-bg: #BFBFBF;
+    --theme-key-active-border: #595959;
+    --theme-key-active-text: #000000;
+    --theme-key-disabled-bg: #f5f5f5;
+    --theme-key-disabled-border: #e0e0e0;
+    --theme-key-disabled-text: rgb(122 122 122 / 67%);
+    --keyboard-outer-border: #d1d1d1;
+    --keyboard-bg: #f3f3f3;
+
+    display: block;
+    width: var(--keyboard-width);
+    height: var(--keyboard-height);
+    margin: 0 auto;
+    contain: layout style paint;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Contenedor del teclado */
+.keyboard {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--keyboard-gap);
+    padding: var(--keyboard-padding);
+    border-radius: 12px;
+    border: 1px solid var(--keyboard-outer-border);
+    background-color: var(--keyboard-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Eliminamos el efecto de gradiente */
+.keyboard::before {
+    display: none;
+}
+
+/* Fila del teclado */
+.keyboard-row {
+    display: flex;
+    gap: var(--keyboard-gap);
+    justify-content: center;
+    width: 100%;
+    height: var(--row-height);
+    margin: 0 auto;
+}
+
+/* Tecla base */
+.key {
+    height: 100%;
+    flex: 1;
+    min-width: var(--key-base-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme-key-bg);
+    color: var(--theme-key-text);
+    border: 0.5px solid var(--theme-key-border);
+    border-radius: 6px;
+    font: 500 clamp(12px, 1.8vw, 16px) -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    letter-spacing: 0.2px;
+    padding: clamp(2px, 1vw, 4px);
+    cursor: pointer;
+    user-select: none;
+    box-shadow:
+        0 3px 0 0 var(--theme-key-border),
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-sizing: border-box;
+    transition: all 0.08s cubic-bezier(0.4, 0.0, 0.2, 1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    will-change: transform, background-color, box-shadow;
+    touch-action: manipulation;
+    transform: translateY(0);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    position: relative;
+}
+
+/* Estados de las teclas */
+.key:hover:not(.disabled) {
+    background: var(--theme-key-hover);
+    transform: translateY(-1px);
+    box-shadow:
+        0 4px 0 0 var(--theme-key-border),
+        0 5px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition-duration: 0.12s;
+}
+
+.key:active:not(.disabled),
+.key.active {
+    background: var(--theme-key-active-bg);
+    border-color: var(--theme-key-active-border);
+    color: var(--theme-key-active-text);
+    transform: translateY(2px) scale(0.98);
+    box-shadow:
+        0 0 0 0 var(--theme-key-border),
+        0 0 1px rgba(0, 0, 0, 0.1),
+        inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.03s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.key.disabled {
+    background: var(--theme-key-disabled-bg);
+    border-color: var(--theme-key-disabled-border);
+    color: var(--theme-key-disabled-text);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Efecto de presión */
+.key:active:not(.disabled)::after,
+.key.active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    animation: keyPress 0.3s ease-out;
+}
+
+@keyframes keyPress {
+    0% {
+        opacity: 1;
+        transform: scale(0.3);
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* Tamaños especiales de teclas */
+.key[data-id="14"] {
+    flex: 1.5;
+}
+
+/* delete */
+.key[data-id="15"] {
+    flex: 1.3;
+}
+
+/* tab */
+.key[data-id="28"] {
+    flex: 1.7;
+}
+
+/* caps lock */
+.key[data-id="41"],
+.key[data-id="52"] {
+    flex: 1.8;
+}
+
+/* shift */
+.key[data-id="56"] {
+    flex: 3;
+}
+
+/* space */
+.key[data-id="53"],
+.key[data-id="54"],
+.key[data-id="55"],
+.key[data-id="57"],
+.key[data-id="58"],
+.key[data-id="59"] {
+    flex: 1.2;
+}
+
+/* ctrl, alt, cmd */
+
+/* Responsive */
+@media (min-width: 1200px) {
+    :host {
+        --keyboard-width: 80%;
+        --key-base-size: clamp(40px, 3vw, 65px);
+        --row-height: clamp(45px, 4vw, 75px);
+    }
+}
+
+@media (max-width: 1200px) {
+    :host {
+        --keyboard-width: 95%;
+        --keyboard-height: min(350px, 55vh);
+        --key-base-size: clamp(32px, 3vw, 55px);
+        --row-height: clamp(38px, 3.5vw, 65px);
+    }
+}
+
+@media (max-width: 768px) {
+    :host {
+        --keyboard-width: 98%;
+        --keyboard-height: min(300px, 50vh);
+        --keyboard-padding: clamp(6px, 1.5vw, 8px);
+        --keyboard-gap: clamp(3px, 0.8vw, 4px);
+        --key-base-size: clamp(24px, 3vw, 40px);
+        --row-height: clamp(28px, 3.5vw, 50px);
+    }
+
+    .key {
+        font-size: clamp(10px, 1.8vw, 14px);
+        padding: clamp(2px, 0.5vw, 4px);
+    }
+}
+
+@media (max-width: 480px) {
+    :host {
+        --keyboard-width: 100%;
+        --keyboard-height: min(250px, 45vh);
+        --keyboard-padding: 4px;
+        --keyboard-gap: 2px;
+        --key-base-size: clamp(20px, 2.8vw, 32px);
+        --row-height: clamp(24px, 3vw, 40px);
+    }
+
+    .key {
+        font-size: clamp(8px, 1.5vw, 12px);
+        padding: 1px;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    :host {
+        --theme-key-bg: #333333;
+        --theme-key-text: #ffffff;
+        --theme-key-border: #252525;
+        --theme-key-hover: #3d3d3d;
+        --theme-key-active-bg: #2a2a2a;
+        --theme-key-active-border: #1f1f1f;
+        --theme-key-active-text: #ffffff;
+        --theme-key-disabled-bg: #2d2d2d;
+        --theme-key-disabled-text: rgb(169 169 169 / 67%);
+        --keyboard-outer-border: #1f1f1f;
+        --keyboard-bg: #262626;
+    }
+
+    .keyboard {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .key {
+        box-shadow:
+            0 3px 0 0 var(--theme-key-border),
+            0 4px 6px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .key:hover:not(.disabled) {
+        box-shadow:
+            0 4px 0 0 var(--theme-key-border),
+            0 5px 8px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .key:active:not(.disabled),
+    .key.active {
+        box-shadow:
+            0 0 0 0 var(--theme-key-border),
+            0 0 1px rgba(0, 0, 0, 0.2),
+            inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .key {
+        transition: none;
+        transform: none !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+}
